@@ -51,11 +51,23 @@ namespace Mago.Services.AuthAPI.Controllers
         }
 
         [HttpPost("AssignRole")]
-        public async Task<LoginResponseDto> AssignRole([FromBody] RegisterRoleRequestDto registerRoleRequestDto)
+        public async Task<IActionResult> AssignRole([FromBody] RegisterRoleRequestDto registerRoleRequestDto)
         {
-            bool assignRole = await _authService.AssignRole(registerRoleRequestDto.Email, registerRoleRequestDto.RoleName.ToUpper());
+            bool assignRoleSuccess = await _authService.AssignRole(registerRoleRequestDto.Email, registerRoleRequestDto.RoleName.ToUpper());
 
+            if (assignRoleSuccess)
+            {
+                ResponseDto<object> responseDto = new();
+                responseDto.IsSuccess = true;
+                responseDto.Message = "Role assigned successfully.";
+                return Ok(responseDto);
+            }
 
+            return BadRequest(new ResponseDto<object>
+            {
+                IsSuccess = false,
+                Message = "Failed to assign role. User may not exist or role may not be valid."
+            });
         }
     }
 }

@@ -29,7 +29,8 @@ namespace Mago.Services.AuthAPI.Service
                 return false;
 
             //if (_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
-            if (await _roleManager.RoleExistsAsync(roleName))
+            bool roleExists = await _roleManager.RoleExistsAsync(roleName);
+            if (!roleExists)
             {
                 // create role if it does not exist
                 IdentityResult roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
