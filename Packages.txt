@@ -1,0 +1,11 @@
+All Api's
+- AutoMapper
+- AutoMapper.Extensions.Microsoft.DependencyInjection
+- Microsoft.EntityFrameworkCore.SqlServer
+- Microsoft.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.Tools
+- Microsoft.AspNetCore.Authentication.JwtBearer
+- Swashbuckle.AspNetCore
+
+For the auth api to use identity
+Microsoft.AspNetCore.Identity.EntityFrameworkCore

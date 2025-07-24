@@ -1,0 +1,12 @@
+
+Migrations
+- // Add migration gets migration ready
+- add-migration AddCouponToDb
+- // update-database sends to the database
+- update-database 
+
+
+
+// when adding Identity table, as long as Microsoft.AspNetCore.Identity.EntityFrameworkCore has been added and the connection has been added to progam
+and this line AppDbContext : IdentityDbContext<IdentityUser>  is in the AppDbContext.cs file. we can then run add-migration AddIdentityTables, then update-database. This has now 
+created the Identity tables in the database.
