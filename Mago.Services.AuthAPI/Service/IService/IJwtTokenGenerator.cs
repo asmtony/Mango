@@ -1,9 +1,8 @@
 ﻿using Mago.Services.AuthAPI.Models;
 
-namespace Mago.Services.AuthAPI.Service.IService
+namespace Mago.Services.AuthAPI.Service.IService;
+
+public interface IJwtTokenGenerator
 {
-    public interface IJwtTokenGenerator
-    {
-        string GenerateToken(ApplicationUser applicationUser);
-    }
+    string GenerateToken(ApplicationUser applicationUser);
 }

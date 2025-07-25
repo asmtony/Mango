@@ -1,4 +1,4 @@
-﻿namespace Mago.Services.AuthAPI.Models.Dto;
+﻿namespace Mango.Web.Models;
 
 public class RegisterRoleRequestDto
 {
