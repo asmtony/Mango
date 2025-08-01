@@ -4,7 +4,9 @@ namespace Mango.Web.Service.IService;
 
 public interface IBaseService
 {
-    Task<ResponseDto> SendAsync(RequestDto requestDto);
+    Task<ResponseDto?> SendAsyncCoupon(RequestDto requestDto);
+
+    Task<ResponseDto?> SendAsyncAuth(RequestDto requestDto);
 }
 
 

@@ -33,7 +33,15 @@ public class CouponController : Controller
         }
         else
         {
-            TempData["error"] = "Error retrieving coupons.";
+            if (response != null)
+            {
+                TempData["error"] = response.Message;
+            }
+            else
+            {
+                TempData["error"] = "Error retrieving coupons.";
+            }
+
         }
 
         return View();

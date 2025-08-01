@@ -14,7 +14,7 @@ public class AuthService : IAuthService
     }
     public async Task<ResponseDto> AssignRoleAsync(RegisterRoleRequestDto registerRoleRequestDto)
     {
-        return await _baseService.SendAsync(new RequestDto
+        return await _baseService.SendAsyncAuth(new RequestDto
         {
             ApiType = ApiTypes.POST,
             Data = registerRoleRequestDto,
@@ -25,7 +25,7 @@ public class AuthService : IAuthService
 
     public async Task<ResponseDto> LoginAsync(LoginRequestDto loginRequestDto)
     {
-        return await _baseService.SendAsync(new RequestDto
+        return await _baseService.SendAsyncAuth(new RequestDto
         {
             ApiType = ApiTypes.POST,
             Data = loginRequestDto,
@@ -36,7 +36,7 @@ public class AuthService : IAuthService
 
     public async Task<ResponseDto> RegisterAsync(RegistrationRequestDto registerRequestDto)
     {
-        return await _baseService.SendAsync(new RequestDto
+        return await _baseService.SendAsyncAuth(new RequestDto
         {
             ApiType = ApiTypes.POST,
             Data = registerRequestDto,

@@ -1,4 +1,5 @@
 using Mango.Web.Service.ProgramServiceSetup;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,15 @@ builder.Services.RegisterAuthHttp(baseAuthUrl);
 
 //ApiStaticUtility.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPIBaseAddress"] ?? "NotSet";
 builder.Services.RegisterCouponInterfaces();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.ExpireTimeSpan = TimeSpan.FromHours(10);
+            options.LoginPath = "/Auth/Login";
+            // options.AccessDeniedPath = "/Auth/AccessDenied";
+        });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +35,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

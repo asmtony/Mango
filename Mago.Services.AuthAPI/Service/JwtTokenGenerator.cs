@@ -3,6 +3,7 @@ using Mago.Services.AuthAPI.Service.IService;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Mago.Services.AuthAPI.Service;
 
@@ -14,25 +15,28 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     {
         _jwtOptions = jwtOptions.Value;
     }
-    public string GenerateToken(ApplicationUser applicationUser)
+    public string GenerateToken(ApplicationUser applicationUser, IEnumerable<string> roles)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = System.Text.Encoding.ASCII.GetBytes(_jwtOptions.SecretKey);
 
-        var claims = new List<System.Security.Claims.Claim>
+        var claimList = new List<System.Security.Claims.Claim>
         {
-            //Homade claim
+            //To do a home made claim
             //new System.Security.Claims.Claim("Name", applicationUser.FirstName + applicationUser.LastName),
-            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, applicationUser.Email),
-            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, applicationUser.Id),
-            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, applicationUser.UserName)
+            new Claim(JwtRegisteredClaimNames.Email, applicationUser.Email),
+            new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Id),
+            new Claim(JwtRegisteredClaimNames.Name, applicationUser.UserName)
         };
 
-        var tokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor
+        // add role to the token
+        claimList.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
             Audience = _jwtOptions.Audience,
             Issuer = _jwtOptions.Issuer,
-            Subject = new System.Security.Claims.ClaimsIdentity(claims),
+            Subject = new ClaimsIdentity(claimList),
             Expires = DateTime.UtcNow.AddDays(_jwtOptions.TokenExpirationInMinutes),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };

@@ -16,11 +16,23 @@ public class BaseService : IBaseService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
+    public async Task<ResponseDto?> SendAsyncCoupon(RequestDto requestDto)
+    {
+        string httpName = "MangoCoupon";
+        return await SendAsync(requestDto, httpName);
+    }
+
+    public async Task<ResponseDto?> SendAsyncAuth(RequestDto requestDto)
+    {
+        string httpName = "MangoAuth";
+        return await SendAsync(requestDto, httpName);
+    }
+
+    private async Task<ResponseDto?> SendAsync(RequestDto requestDto, string httpName)
     {
         try
         {
-            HttpClient client = _httpClientFactory.CreateClient("MangoCoupon");
+            HttpClient client = _httpClientFactory.CreateClient(httpName);
 
             HttpRequestMessage message = new(GetMessageType(requestDto.ApiType), requestDto.URL);
             message.Headers.Add("Accept", "application/json");

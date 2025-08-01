@@ -34,21 +34,28 @@ public class AuthApiController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<LoginResponseDto> Login([FromBody] LoginRequestDto request)
+    public async Task<ResponseDto<LoginResponseDto>> Login([FromBody] LoginRequestDto request)
     {
         var loginResponse = await _authService.Login(request);
+        var responseDto = new ResponseDto<LoginResponseDto>();
         // Logic for user login
         if (loginResponse.User == null || loginResponse.User.Id == null || loginResponse.User.Id.Length == 0)
         {
-            var responseDto = new ResponseDto<object>
+            responseDto = new ResponseDto<LoginResponseDto>
             {
                 IsSuccess = false,
                 Message = "Invalid username or password."
             };
 
-            return loginResponse;
+            return responseDto;
         }
-        return loginResponse;
+        responseDto = new ResponseDto<LoginResponseDto>
+        {
+            IsSuccess = true,
+            Message = "",
+            Result = loginResponse
+        };
+        return responseDto;
     }
 
     [HttpPost("AssignRole")]

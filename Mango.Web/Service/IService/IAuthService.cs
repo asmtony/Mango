@@ -1,11 +1,10 @@
 ﻿using Mango.Web.Models;
 
-namespace Mango.Web.Service.IService
+namespace Mango.Web.Service.IService;
+
+public interface IAuthService
 {
-    public interface IAuthService
-    {
-        Task<ResponseDto> LoginAsync(LoginRequestDto loginRequestDto);
-        Task<ResponseDto> RegisterAsync(RegistrationRequestDto registerRequestDto);
-        Task<ResponseDto> AssignRoleAsync(RegisterRoleRequestDto registerRequestDto);
-    }
+    Task<ResponseDto> LoginAsync(LoginRequestDto loginRequestDto);
+    Task<ResponseDto> RegisterAsync(RegistrationRequestDto registerRequestDto);
+    Task<ResponseDto> AssignRoleAsync(RegisterRoleRequestDto registerRequestDto);
 }

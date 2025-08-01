@@ -33,25 +33,36 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach (var item in Model)
+				@if(Model == null || Model.Count() == 0)
 				{
 					<tr>
-						<td>
-                            @item.CouponCode
-						</td>
-						<td>
-                             @((item.DiscountAmount).ToString("c"))
-						</td>
-						<td>
-							@((item.MinAmount).ToString("c"))
-						</td>
-						<td>
-							<a asp-action="DeleteCoupon" asp-route-couponId="@item.CouponId" class="btn btn-danger">
-								<i class="bi bi-trash"></i>
-							</a>
-						</td>
+						<td colspan="4" class="text-center">No coupons available.</td>
 					</tr>
 				}
+				else
+				{
+					@foreach (var item in Model)
+					{
+						<tr>
+							<td>
+								@item.CouponCode
+							</td>
+							<td>
+								@((item.DiscountAmount).ToString("c"))
+							</td>
+							<td>
+								@((item.MinAmount).ToString("c"))
+							</td>
+							<td>
+								<a asp-action="DeleteCoupon" asp-route-couponId="@item.CouponId" class="btn btn-danger">
+									<i class="bi bi-trash"></i>
+								</a>
+							</td>
+						</tr>
+					}
+				}
+				
+				
 				
 
 			</tbody>

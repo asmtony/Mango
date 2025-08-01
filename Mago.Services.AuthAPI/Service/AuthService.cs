@@ -65,7 +65,8 @@ public class AuthService : IAuthService
         }
 
         // user validated, generate token
-        string token = _jwtTokenGenerator.GenerateToken(user);
+        var roles = await _userManager.GetRolesAsync(user);
+        string token = _jwtTokenGenerator.GenerateToken(user, roles);
 
         UserDto userDto = new UserDto
         {

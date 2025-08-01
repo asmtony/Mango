@@ -2,12 +2,14 @@
 using Mago.Services.CouponAPI.Data;
 using Mago.Services.CouponAPI.Models.DbModels;
 using Mago.Services.CouponAPI.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mago.Services.CouponAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class CouponApiController : ControllerBase
 {
     private readonly AppDbContext _appDbContext;
