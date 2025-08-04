@@ -1,12 +1,13 @@
 ﻿using Mago.Services.CouponAPI.Models.Dto;
 using Mango.Web.Models;
 using Mango.Web.Service.IService;
+using Mango.Web.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Mango.Web.Controllers;
 
-public class CouponController : Controller
+public class CouponController : BaseController
 {
     private readonly ICouponService _couponService;
 
@@ -35,11 +36,13 @@ public class CouponController : Controller
         {
             if (response != null)
             {
-                TempData["error"] = response.Message;
+                SetTempDataMessage(response.Message, ApiStaticUtility.TempDataTypes.Error);
+                //TempData["error"] = response.Message;
             }
             else
             {
-                TempData["error"] = "Error retrieving coupons.";
+                SetTempDataMessage("Error retrieving coupons.", ApiStaticUtility.TempDataTypes.Error);
+                //TempData["error"] = "Error retrieving coupons.";
             }
 
         }
@@ -55,21 +58,53 @@ public class CouponController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateCoupon(CouponDto coupon)
     {
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            //coupon. = User.Identity.Name;
+            //coupon.UpdatedBy = User.Identity.Name;
+        }
+        else
+        {
+            SetTempDataMessage("You dont have permissions to create a coupon.", ApiStaticUtility.TempDataTypes.Error);
+            return RedirectToAction(nameof(CouponIndex));
+        }
         if (ModelState.IsValid)
         {
             ResponseDto? response = await _couponService.CreateCouponAsync(coupon);
             if (response != null && response.IsSuccess)
             {
-                TempData["success"] = "Coupon created successfully.";
+                SetTempDataMessage("Coupon created successfully.", ApiStaticUtility.TempDataTypes.Success);
+                //TempData["success"] = "Coupon created successfully.";
                 return RedirectToAction(nameof(CouponIndex));
             }
             else
             {
-                TempData["error"] = "Error creating coupon.";
+                if (response != null)
+                {
+                    SetTempDataMessage(response.Message, ApiStaticUtility.TempDataTypes.Error);
+                    //TempData["error"] = response.Message;
+                }
+                else
+                {
+                    SetTempDataMessage("Error creating coupon.", ApiStaticUtility.TempDataTypes.Error);
+                    //TempData["error"] = "Error creating coupon.";
+                }
             }
         }
         return View();
     }
+
+    //private void SetTempDataMessage(ResponseDto? response, ApiStaticUtility.TempDataTypes tempDataTypes)
+    //{
+    //    if (response != null && !string.IsNullOrEmpty(response.Message))
+    //    {
+    //        TempData[responseType] = response.Message;
+    //    }
+    //    else
+    //    {
+    //        TempData["error"] = "An error occurred while processing your request.";
+    //    }
+    //}
 
     public async Task<IActionResult> DeleteCoupon(int couponId)
     {
@@ -87,7 +122,8 @@ public class CouponController : Controller
             }
             else
             {
-                TempData["error"] = $"Error deleteing coupon - {response.Message}";
+                SetTempDataMessage($"Error deleteing coupon - {response.Message}", ApiStaticUtility.TempDataTypes.Error);
+                //TempData["error"] = $"Error deleteing coupon - {response.Message}";
             }
         }
         return View();
@@ -99,12 +135,14 @@ public class CouponController : Controller
         ResponseDto? response = await _couponService.DeleteCouponAsync(coupon.CouponId);
         if (response != null && response.IsSuccess)
         {
-            TempData["success"] = $"Deleted record {coupon.CouponId}.";
+            SetTempDataMessage($"Deleted record {coupon.CouponId}.", ApiStaticUtility.TempDataTypes.Success);
+            //TempData["success"] = $"Deleted record {coupon.CouponId}.";
             return RedirectToAction(nameof(CouponIndex));
         }
         else
         {
-            TempData["error"] = response.Message;
+            SetTempDataMessage(response.Message, ApiStaticUtility.TempDataTypes.Error);
+            //TempData["error"] = response.Message;
         }
         return View(coupon);
     }

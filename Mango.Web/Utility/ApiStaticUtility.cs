@@ -12,4 +12,11 @@ public class ApiStaticUtility
         PUT,
         DELETE
     }
+
+    public enum TempDataTypes
+    {
+        Success,
+        Error,
+        Warning
+    }
 }

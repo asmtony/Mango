@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Mango.Web.Controllers
 {
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
         private readonly IAuthService _authService;
         private readonly ITokenProvider _tokenProvider;
@@ -48,7 +48,9 @@ namespace Mango.Web.Controllers
                     await SignInUser(loginResponse);
 
                     // Assuming the response contains a token or user information
-                    TempData["success"] = "Login successful!";
+                    SetTempDataMessage("Login successful!", ApiStaticUtility.TempDataTypes.Success);
+
+                    //TempData["success"] = "Login successful!";
                     _tokenProvider.SetToken(loginResponse.Token);
                     return RedirectToAction("Index", "Home");
                     //RedirectToAction("CouponIndex", nameof(CouponController));

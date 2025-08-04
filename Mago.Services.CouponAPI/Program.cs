@@ -1,5 +1,6 @@
 using Mago.Services.CouponAPI.Data;
 using Mago.Services.CouponAPI.Mappings;
+using Mango.Api.JwtAuthenticationSetup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,29 +37,10 @@ builder.Services.AddSwaggerGen(options =>
         });
 });
 
-var apiSettings = builder.Configuration.GetSection("ApiSettings");
 
-var issuer = apiSettings.GetValue<string>("Issuer");
-var secret = apiSettings.GetValue<string>("SecretKey");
-var audience = apiSettings.GetValue<string>("Audience");
+//  Add the homemade JWT authentication service
+builder.AddAppAuthentication();
 
-var key = System.Text.Encoding.UTF8.GetBytes(secret);
-builder.Services.AddAuthentication(a =>
-{
-    a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
-        ValidateIssuer = true,
-        ValidIssuer = issuer,
-        ValidateAudience = true,
-        ValidAudience = audience
-    };
-});
 
 builder.Services.AddAuthorization();
 

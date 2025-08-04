@@ -9,7 +9,7 @@ namespace Mago.Services.CouponAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class CouponApiController : ControllerBase
 {
     private readonly AppDbContext _appDbContext;
@@ -47,6 +47,7 @@ public class CouponApiController : ControllerBase
 
     [HttpGet]
     [Route("{id:int}")]
+    [Authorize(Roles = "ADMIN")]
     public IActionResult GetCouponById(int id)
     {
         ResponseDto<CouponDto> responseDto = new();
@@ -76,6 +77,7 @@ public class CouponApiController : ControllerBase
 
     [HttpGet]
     [Route("GetCouponByCode/{couponCode}")]
+    [Authorize(Roles = "ADMIN")]
     public IActionResult GetCouponByCode(string couponCode)
     {
         ResponseDto<CouponDto> responseDto = new();
@@ -105,6 +107,7 @@ public class CouponApiController : ControllerBase
 
     [HttpPost]
     //[Route("GetCouponByCode/{couponCode}")]
+    [Authorize(Roles = "ADMIN")]
     public IActionResult Post([FromBody] CouponDto couponDto)
     {
         ResponseDto<CouponDto> responseDto = new();
@@ -127,6 +130,7 @@ public class CouponApiController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "ADMIN")]
     //[Route("GetCouponByCode/{couponCode}")]
     public IActionResult Put([FromBody] CouponDto couponDto)
     {
@@ -151,6 +155,7 @@ public class CouponApiController : ControllerBase
 
     [HttpDelete]
     [Route("{id:int}")]
+    [Authorize(Roles = "ADMIN")]
     public IActionResult Delete(int id)
     {
         ResponseDto<CouponDto> responseDto = new();

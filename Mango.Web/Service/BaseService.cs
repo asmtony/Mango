@@ -10,16 +10,18 @@ namespace Mango.Web.Service;
 public class BaseService : IBaseService
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ITokenProvider _tokenProvider;
 
-    public BaseService(IHttpClientFactory httpClientFactory)
+    public BaseService(IHttpClientFactory httpClientFactory, ITokenProvider tokenProvider)
     {
         _httpClientFactory = httpClientFactory;
+        _tokenProvider = tokenProvider;
     }
 
-    public async Task<ResponseDto?> SendAsyncCoupon(RequestDto requestDto)
+    public async Task<ResponseDto?> SendAsyncCoupon(RequestDto requestDto, bool withBearer = true)
     {
         string httpName = "MangoCoupon";
-        return await SendAsync(requestDto, httpName);
+        return await SendAsync(requestDto, httpName, withBearer);
     }
 
     public async Task<ResponseDto?> SendAsyncAuth(RequestDto requestDto)
@@ -28,7 +30,7 @@ public class BaseService : IBaseService
         return await SendAsync(requestDto, httpName);
     }
 
-    private async Task<ResponseDto?> SendAsync(RequestDto requestDto, string httpName)
+    private async Task<ResponseDto?> SendAsync(RequestDto requestDto, string httpName, bool withBearer = false)
     {
         try
         {
@@ -36,6 +38,12 @@ public class BaseService : IBaseService
 
             HttpRequestMessage message = new(GetMessageType(requestDto.ApiType), requestDto.URL);
             message.Headers.Add("Accept", "application/json");
+
+            if (withBearer)
+            {
+                var token = _tokenProvider.GetToken();
+                message.Headers.Add("Authorization", $"Bearer {token}");
+            }
 
             if (requestDto.Data != null)
             {
