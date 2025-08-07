@@ -1,4 +1,4 @@
-﻿namespace Mago.Services.CouponAPI.Models.Dto;
+﻿namespace Mago.Services.ProductApi.Models.Dto;
 
 public class ResponseDto<T>
 {

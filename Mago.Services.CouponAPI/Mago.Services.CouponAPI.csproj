@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Mango.Api.JwtAuthenticationSetup\Mango.Api.JwtAuthenticationSetup.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

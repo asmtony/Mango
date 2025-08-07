@@ -59,7 +59,7 @@ public class CouponApiController : ControllerBase
             if (coupon == null || coupon.CouponId <= 0)
             {
                 responseDto.IsSuccess = false;
-                responseDto.Message = ($"No coupon found for Id {id}.");
+                responseDto.UserMessage = ($"No coupon found for Id {id}.");
             }
             else
             {
@@ -89,7 +89,7 @@ public class CouponApiController : ControllerBase
             if (coupon == null || coupon.CouponId <= 0)
             {
                 responseDto.IsSuccess = false;
-                responseDto.Message = ($"No coupon found for coupon code {couponCode}.");
+                responseDto.UserMessage = ($"No coupon found for coupon code {couponCode}.");
             }
             else
             {
