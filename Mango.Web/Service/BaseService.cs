@@ -18,19 +18,25 @@ public class BaseService : IBaseService
         _tokenProvider = tokenProvider;
     }
 
-    public async Task<ResponseDto?> SendAsyncCoupon(RequestDto requestDto, bool withBearer = true)
-    {
-        string httpName = "MangoCoupon";
-        return await SendAsync(requestDto, httpName, withBearer);
-    }
+    //public async Task<ResponseDto?> SendAsyncCoupon(RequestDto requestDto, bool withBearer = true)
+    //{
+    //    string httpName = ApiStaticUtility.HttpCouponName;
+    //    return await SendAsync(requestDto, httpName, withBearer);
+    //}
 
-    public async Task<ResponseDto?> SendAsyncAuth(RequestDto requestDto)
-    {
-        string httpName = "MangoAuth";
-        return await SendAsync(requestDto, httpName);
-    }
+    //public async Task<ResponseDto?> SendAsyncProduct(RequestDto requestDto, bool withBearer = true)
+    //{
+    //    string httpName = ApiStaticUtility.HttpProductName;
+    //    return await SendAsync(requestDto, httpName, withBearer);
+    //}
 
-    private async Task<ResponseDto?> SendAsync(RequestDto requestDto, string httpName, bool withBearer = false)
+    //public async Task<ResponseDto?> SendAsyncAuth(RequestDto requestDto)
+    //{
+    //    string httpName = ApiStaticUtility.HttpAuthtName;
+    //    return await SendAsync(requestDto, httpName);
+    //}
+
+    public async Task<ResponseDto?> SendAsync(RequestDto requestDto, string httpName, bool withBearer)
     {
         try
         {
@@ -51,9 +57,7 @@ public class BaseService : IBaseService
                     JsonSerializer.Serialize(requestDto.Data), Encoding.UTF8, "application/json");
             }
 
-            HttpResponseMessage apiResponse = null;
-
-            apiResponse = await client.SendAsync(message);
+            HttpResponseMessage apiResponse = await client.SendAsync(message);
             return await GetResponseMessge(apiResponse);
         }
         catch (Exception ex)

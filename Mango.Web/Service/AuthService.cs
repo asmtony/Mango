@@ -1,5 +1,6 @@
 ﻿using Mango.Web.Models;
 using Mango.Web.Service.IService;
+using Mango.Web.Utility;
 using static Mango.Web.Utility.ApiStaticUtility;
 
 namespace Mango.Web.Service;
@@ -14,34 +15,38 @@ public class AuthService : IAuthService
     }
     public async Task<ResponseDto> AssignRoleAsync(RegisterRoleRequestDto registerRoleRequestDto)
     {
-        return await _baseService.SendAsyncAuth(new RequestDto
+        RequestDto request = new RequestDto
         {
             ApiType = ApiTypes.POST,
             Data = registerRoleRequestDto,
             URL = $"AuthApi/AssignRole",
             AccessToken = ""
-        });
+        };
+        return await _baseService.SendAsync(request, ApiStaticUtility.HttpAuthtName, false);
     }
 
     public async Task<ResponseDto> LoginAsync(LoginRequestDto loginRequestDto)
     {
-        return await _baseService.SendAsyncAuth(new RequestDto
+        RequestDto request = new RequestDto
         {
             ApiType = ApiTypes.POST,
             Data = loginRequestDto,
             URL = $"AuthApi/login",
             AccessToken = ""
-        });
+        };
+        return await _baseService.SendAsync(request, ApiStaticUtility.HttpAuthtName, false);
     }
 
     public async Task<ResponseDto> RegisterAsync(RegistrationRequestDto registerRequestDto)
     {
-        return await _baseService.SendAsyncAuth(new RequestDto
+        RequestDto request = new RequestDto
         {
             ApiType = ApiTypes.POST,
             Data = registerRequestDto,
             URL = $"AuthApi/register",
             AccessToken = ""
-        });
+        };
+
+        return await _baseService.SendAsync(request, ApiStaticUtility.HttpAuthtName, false);
     }
 }

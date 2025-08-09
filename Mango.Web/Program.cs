@@ -7,8 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 string baseCouponUrl = builder.Configuration["ServiceUrls:CouponAPIBaseAddress"] ?? "NotSet";
+string baseProductUrl = builder.Configuration["ServiceUrls:ProductAPIBaseAddress"] ?? "NotSet";
 string baseAuthUrl = builder.Configuration["ServiceUrls:AuthAPIBaseAddress"] ?? "NotSet";
-builder.Services.RegisterMangoHttp(baseCouponUrl);
+builder.Services.RegisterMangoCouponHttp(baseCouponUrl);
+builder.Services.RegisterMangoProductHttp(baseProductUrl);
 builder.Services.RegisterAuthHttp(baseAuthUrl);
 
 //ApiStaticUtility.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPIBaseAddress"] ?? "NotSet";

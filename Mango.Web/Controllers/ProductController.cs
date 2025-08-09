@@ -6,30 +6,30 @@ using Newtonsoft.Json;
 
 namespace Mango.Web.Controllers;
 
-public class CouponController : BaseController
+public class ProductController : BaseController
 {
-    private readonly ICouponService _couponService;
+    private readonly IProductService _productService;
 
-    public CouponController(ICouponService couponService)
+    public ProductController(IProductService productService)
     {
-        _couponService = couponService;
+        _productService = productService;
     }
-    public async Task<IActionResult> CouponIndex()
+    public async Task<IActionResult> ProductIndex()
     {
-        List<CouponDto> couponList = new();
-        ResponseDto? response = await _couponService.GetAllCouponsAsync();
+        List<ProductDto> productList = new();
+        ResponseDto? response = await _productService.GetAllProductsAsync();
         if (response != null && response.IsSuccess)
         {
             var resultString = response.Result?.ToString();
             if (!string.IsNullOrEmpty(resultString))
             {
-                var deserializedList = JsonConvert.DeserializeObject<List<CouponDto>>(resultString);
+                var deserializedList = JsonConvert.DeserializeObject<List<ProductDto>>(resultString);
                 if (deserializedList != null)
                 {
-                    couponList = deserializedList;
+                    productList = deserializedList;
                 }
             }
-            return View(couponList);
+            return View(productList);
         }
         else
         {
@@ -40,8 +40,8 @@ public class CouponController : BaseController
             }
             else
             {
-                SetTempDataMessage("Error retrieving coupons.", ApiStaticUtility.TempDataTypes.Error);
-                //TempData["error"] = "Error retrieving coupons.";
+                SetTempDataMessage("Error retrieving products.", ApiStaticUtility.TempDataTypes.Error);
+                //TempData["error"] = "Error retrieving products.";
             }
 
         }
@@ -49,32 +49,32 @@ public class CouponController : BaseController
         return View();
     }
 
-    public async Task<IActionResult> CreateCoupon()
+    public async Task<IActionResult> CreateProduct()
     {
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCoupon(CouponDto coupon)
+    public async Task<IActionResult> CreateProduct(ProductDto product)
     {
         if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            //coupon. = User.Identity.Name;
+            //product. = User.Identity.Name;
             //coupon.UpdatedBy = User.Identity.Name;
         }
         else
         {
             SetTempDataMessage("You dont have permissions to create a coupon.", ApiStaticUtility.TempDataTypes.Error);
-            return RedirectToAction(nameof(CouponIndex));
+            return RedirectToAction(nameof(ProductIndex));
         }
         if (ModelState.IsValid)
         {
-            ResponseDto? response = await _couponService.CreateCouponAsync(coupon);
+            ResponseDto? response = await _productService.CreateProductAsync(product);
             if (response != null && response.IsSuccess)
             {
                 SetTempDataMessage("Coupon created successfully.", ApiStaticUtility.TempDataTypes.Success);
                 //TempData["success"] = "Coupon created successfully.";
-                return RedirectToAction(nameof(CouponIndex));
+                return RedirectToAction(nameof(ProductIndex));
             }
             else
             {
@@ -105,9 +105,9 @@ public class CouponController : BaseController
     //    }
     //}
 
-    public async Task<IActionResult> DeleteCoupon(int couponId)
+    public async Task<IActionResult> DeleteProduct(int productId)
     {
-        ResponseDto? response = await _couponService.GetCouponByIdAsync(couponId);
+        ResponseDto? response = await _productService.GetProductByIdAsync(productId);
         if (response != null && response.IsSuccess)
         {
             var resultString = response.Result?.ToString();
@@ -129,20 +129,20 @@ public class CouponController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> DeleteCoupon(CouponDto coupon)
+    public async Task<IActionResult> DeleteProduct(ProductDto product)
     {
-        ResponseDto? response = await _couponService.DeleteCouponAsync(coupon.CouponId);
+        ResponseDto? response = await _productService.DeleteProductAsync(product.ProductId);
         if (response != null && response.IsSuccess)
         {
-            SetTempDataMessage($"Deleted record {coupon.CouponId}.", ApiStaticUtility.TempDataTypes.Success);
+            SetTempDataMessage($"Deleted record {product.ProductId}.", ApiStaticUtility.TempDataTypes.Success);
             //TempData["success"] = $"Deleted record {coupon.CouponId}.";
-            return RedirectToAction(nameof(CouponIndex));
+            return RedirectToAction(nameof(ProductIndex));
         }
         else
         {
             SetTempDataMessage(response.Message, ApiStaticUtility.TempDataTypes.Error);
             //TempData["error"] = response.Message;
         }
-        return View(coupon);
+        return View(product);
     }
 }
