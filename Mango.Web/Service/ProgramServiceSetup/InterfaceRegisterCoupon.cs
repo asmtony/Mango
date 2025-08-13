@@ -10,6 +10,7 @@ public static class InterfaceRegisterCoupon
         services.AddScoped<ICouponService, CouponService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ITokenProvider, TokenProvider>();
+        services.AddScoped<IProductService, ProductService>();
 
         return services;
     }

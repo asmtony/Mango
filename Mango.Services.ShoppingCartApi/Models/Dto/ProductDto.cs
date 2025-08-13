@@ -1,4 +1,4 @@
-﻿namespace Mango.Web.Models;
+﻿namespace Mango.Services.ShoppingCartApi.Models.Dto;
 
 public class ProductDto
 {
@@ -8,5 +8,4 @@ public class ProductDto
     public string Description { get; set; } = string.Empty;
     public string CategoryName { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
-    public int Count { get; set; }
 }

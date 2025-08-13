@@ -4,6 +4,7 @@ using Mago.Services.ProductApi.Models.DbModels;
 using Mago.Services.ProductApi.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.ProductApi.Controllers
 {
@@ -47,13 +48,13 @@ namespace Mango.Services.ProductApi.Controllers
         [HttpGet]
         [Route("{id:int}")]
         [Authorize(Roles = "ADMIN")]
-        public IActionResult GetProductById(int id)
+        public async Task<IActionResult> GetProductById(int id)
         {
             ResponseDto<ProductDto> responseDto = new();
 
             try
             {
-                Product product = _appDbContext.Products.FirstOrDefault(u => u.ProductId == id) ?? new Product();
+                Product product = await _appDbContext.Products.FirstOrDefaultAsync(u => u.ProductId == id) ?? new Product();
 
                 if (product == null || product.ProductId <= 0)
                 {
@@ -76,16 +77,50 @@ namespace Mango.Services.ProductApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        public IActionResult Post([FromBody] ProductDto productDto)
+        public async Task<IActionResult> Post([FromBody] ProductDto productDto)
         {
             ResponseDto<ProductDto> responseDto = new();
 
             try
             {
                 Product product = _mapper.Map<Product>(productDto);
-                _appDbContext.Add(product);
-                _appDbContext.SaveChanges();
+                if (product == null)
+                {
+                    responseDto.IsSuccess = false;
+                    responseDto.UserMessage = "Product data is invalid.";
+                    return BadRequest(responseDto);
+                }
 
+                if (string.IsNullOrEmpty(product.Name) || product.Price <= 0)
+                {
+                    responseDto.IsSuccess = false;
+                    responseDto.UserMessage = "Product name and price must be provided.";
+                    return BadRequest(responseDto);
+                }
+
+                if (product.ProductId > 0)
+                {
+                    // If ProductId is provided, update the existing product
+                    Product existingProduct = await _appDbContext.Products.FirstOrDefaultAsync(u => u.ProductId == product.ProductId);
+                    if (existingProduct != null)
+                    {
+                        existingProduct.Name = product.Name;
+                        existingProduct.Price = product.Price;
+                        existingProduct.Description = product.Description;
+                        existingProduct.CategoryName = product.CategoryName;
+                        existingProduct.ImageUrl = product.ImageUrl;
+                        _appDbContext.Update(existingProduct);
+                        product = existingProduct; // Use the updated product
+                    }
+                }
+                else
+                {
+                    // If ProductId is not provided, create a new product
+
+                    _appDbContext.Add(product);
+
+                }
+                _appDbContext.SaveChanges();
                 ProductDto createdProductDto = _mapper.Map<ProductDto>(product);
                 responseDto.Result = createdProductDto;
             }

@@ -10,14 +10,23 @@ namespace Mango.Web.Service;
 public class ProductService : IProductService
 {
     private readonly IBaseService _baseService;
+    private readonly string _apiController;
 
     public ProductService(IBaseService baseService)
     {
+        _apiController = "product";
         _baseService = baseService;
     }
-    public async Task<ResponseDto> CreateProductAsync(ProductDto couponDto)
+
+    public async Task<ResponseDto> EditProductAsync(ProductDto productDto)
     {
-        RequestDto request = BuildPostRequest(ApiTypes.POST, "CouponApi", couponDto);
+        RequestDto request = BuildPostRequest(ApiTypes.POST, _apiController, productDto);
+        return await _baseService.SendAsync(request, ApiStaticUtility.HttpProductName, true);
+    }
+
+    public async Task<ResponseDto> CreateProductAsync(ProductDto productDto)
+    {
+        RequestDto request = BuildPostRequest(ApiTypes.POST, _apiController, productDto);
         return await _baseService.SendAsync(request, ApiStaticUtility.HttpProductName, true);
     }
 
@@ -34,11 +43,11 @@ public class ProductService : IProductService
 
     public async Task<ResponseDto> DeleteProductAsync(int id)
     {
-        // Assuming that the URL for deleting a product is "CouponApi/{id}"
+        // Assuming that the URL for deleting a product is "ProductApi/{id}"
         RequestDto request = new RequestDto
         {
             ApiType = ApiTypes.DELETE,
-            URL = $"CouponApi/{id}",
+            URL = $"{_apiController}/{id}",
             AccessToken = ""
         };
         return await _baseService.SendAsync(request, ApiStaticUtility.HttpProductName, true);
@@ -46,7 +55,7 @@ public class ProductService : IProductService
 
     public async Task<ResponseDto> GetAllProductsAsync()
     {
-        string url = $"CouponApi";
+        string url = _apiController;
         RequestDto request = new RequestDto
         {
             ApiType = ApiTypes.GET,
@@ -57,9 +66,9 @@ public class ProductService : IProductService
         return await _baseService.SendAsync(request, ApiStaticUtility.HttpProductName, true);
     }
 
-    public async Task<ResponseDto> GetProductAsync(string couponCode)
+    public async Task<ResponseDto> GetProductAsync(string ProductCode)
     {
-        RequestDto request = new RequestDto { ApiType = ApiTypes.GET, URL = $"CouponApi/GetByCode", AccessToken = "" };
+        RequestDto request = new RequestDto { ApiType = ApiTypes.GET, URL = $"ProductApi/GetByCode", AccessToken = "" };
         return await _baseService.SendAsync(request, ApiStaticUtility.HttpProductName, true);
     }
 
@@ -68,19 +77,19 @@ public class ProductService : IProductService
         RequestDto request = new RequestDto
         {
             ApiType = ApiTypes.GET,
-            URL = $"CouponApi/{id}",
+            URL = $"{_apiController}/{id}",
             AccessToken = ""
         };
         return await _baseService.SendAsync(request, ApiStaticUtility.HttpProductName, true);
     }
 
-    public async Task<ResponseDto> UpdateProductAsync(ProductDto productDto/*CouponDto couponDto*/)
+    public async Task<ResponseDto> UpdateProductAsync(ProductDto productDto/*ProductDto ProductDto*/)
     {
         RequestDto request = new RequestDto
         {
             ApiType = ApiTypes.PUT,
             Data = productDto,
-            URL = $"CouponApi",
+            URL = _apiController,
             AccessToken = ""
         };
 

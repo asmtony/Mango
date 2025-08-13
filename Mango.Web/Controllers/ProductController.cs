@@ -14,6 +14,50 @@ public class ProductController : BaseController
     {
         _productService = productService;
     }
+
+    public async Task<IActionResult> EditProduct()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditProduct(ProductDto product)
+    {
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            //product. = User.Identity.Name;
+            //product.UpdatedBy = User.Identity.Name;
+        }
+        else
+        {
+            SetTempDataMessage("You dont have permissions to edit a product.", ApiStaticUtility.TempDataTypes.Error);
+            return RedirectToAction(nameof(ProductIndex));
+        }
+        if (ModelState.IsValid)
+        {
+            ResponseDto? response = await _productService.CreateProductAsync(product);
+            if (response != null && response.IsSuccess)
+            {
+                SetTempDataMessage("product updated successfully.", ApiStaticUtility.TempDataTypes.Success);
+                return RedirectToAction(nameof(ProductIndex));
+            }
+            else
+            {
+                if (response != null)
+                {
+                    SetTempDataMessage(response.Message, ApiStaticUtility.TempDataTypes.Error);
+                    //TempData["error"] = response.Message;
+                }
+                else
+                {
+                    SetTempDataMessage("Error editing product.", ApiStaticUtility.TempDataTypes.Error);
+                    //TempData["error"] = "Error creating product.";
+                }
+            }
+        }
+        return View();
+    }
+
     public async Task<IActionResult> ProductIndex()
     {
         List<ProductDto> productList = new();
@@ -41,7 +85,7 @@ public class ProductController : BaseController
             else
             {
                 SetTempDataMessage("Error retrieving products.", ApiStaticUtility.TempDataTypes.Error);
-                //TempData["error"] = "Error retrieving products.";
+
             }
 
         }
@@ -60,11 +104,11 @@ public class ProductController : BaseController
         if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             //product. = User.Identity.Name;
-            //coupon.UpdatedBy = User.Identity.Name;
+            //product.UpdatedBy = User.Identity.Name;
         }
         else
         {
-            SetTempDataMessage("You dont have permissions to create a coupon.", ApiStaticUtility.TempDataTypes.Error);
+            SetTempDataMessage("You dont have permissions to create a product.", ApiStaticUtility.TempDataTypes.Error);
             return RedirectToAction(nameof(ProductIndex));
         }
         if (ModelState.IsValid)
@@ -72,8 +116,8 @@ public class ProductController : BaseController
             ResponseDto? response = await _productService.CreateProductAsync(product);
             if (response != null && response.IsSuccess)
             {
-                SetTempDataMessage("Coupon created successfully.", ApiStaticUtility.TempDataTypes.Success);
-                //TempData["success"] = "Coupon created successfully.";
+                SetTempDataMessage("product created successfully.", ApiStaticUtility.TempDataTypes.Success);
+                //TempData["success"] = "product created successfully.";
                 return RedirectToAction(nameof(ProductIndex));
             }
             else
@@ -85,26 +129,15 @@ public class ProductController : BaseController
                 }
                 else
                 {
-                    SetTempDataMessage("Error creating coupon.", ApiStaticUtility.TempDataTypes.Error);
-                    //TempData["error"] = "Error creating coupon.";
+                    SetTempDataMessage("Error creating product.", ApiStaticUtility.TempDataTypes.Error);
+                    //TempData["error"] = "Error creating product.";
                 }
             }
         }
         return View();
     }
 
-    //private void SetTempDataMessage(ResponseDto? response, ApiStaticUtility.TempDataTypes tempDataTypes)
-    //{
-    //    if (response != null && !string.IsNullOrEmpty(response.Message))
-    //    {
-    //        TempData[responseType] = response.Message;
-    //    }
-    //    else
-    //    {
-    //        TempData["error"] = "An error occurred while processing your request.";
-    //    }
-    //}
-
+    [HttpGet]
     public async Task<IActionResult> DeleteProduct(int productId)
     {
         ResponseDto? response = await _productService.GetProductByIdAsync(productId);
@@ -113,19 +146,19 @@ public class ProductController : BaseController
             var resultString = response.Result?.ToString();
             if (!string.IsNullOrEmpty(resultString))
             {
-                var deserializedCoupon = JsonConvert.DeserializeObject<CouponDto>(resultString);
-                if (deserializedCoupon != null && deserializedCoupon.CouponId > 0)
+                var deserializedProduct = JsonConvert.DeserializeObject<ProductDto>(resultString);
+                if (deserializedProduct != null && deserializedProduct.ProductId > 0)
                 {
-                    return View(deserializedCoupon);
+                    return View(deserializedProduct);
                 }
             }
             else
             {
-                SetTempDataMessage($"Error deleteing coupon - {response.Message}", ApiStaticUtility.TempDataTypes.Error);
-                //TempData["error"] = $"Error deleteing coupon - {response.Message}";
+                SetTempDataMessage($"Error deleteing product - {response.Message}", ApiStaticUtility.TempDataTypes.Error);
+                //TempData["error"] = $"Error deleteing product - {response.Message}";
             }
         }
-        return View();
+        return View(response.Result);
     }
 
     [HttpPost]
@@ -135,7 +168,7 @@ public class ProductController : BaseController
         if (response != null && response.IsSuccess)
         {
             SetTempDataMessage($"Deleted record {product.ProductId}.", ApiStaticUtility.TempDataTypes.Success);
-            //TempData["success"] = $"Deleted record {coupon.CouponId}.";
+            //TempData["success"] = $"Deleted record {product.productId}.";
             return RedirectToAction(nameof(ProductIndex));
         }
         else

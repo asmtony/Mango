@@ -131,7 +131,6 @@ public class CouponApiController : ControllerBase
 
     [HttpPut]
     [Authorize(Roles = "ADMIN")]
-    //[Route("GetCouponByCode/{couponCode}")]
     public IActionResult Put([FromBody] CouponDto couponDto)
     {
         ResponseDto<CouponDto> responseDto = new();

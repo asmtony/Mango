@@ -1,6 +1,7 @@
 ﻿@model Mango.Web.Models.ProductDto
 
 <form asp-action="CreateProduct">
+    <input type="hidden" asp-for="ProductId" />
     <br />
     <div class="container border p-3">
         <h1 class="text-white text-center">Create Product</h1>
@@ -41,22 +42,10 @@
             <div class="col-5 offset-2">
                 <a asp-action="ProductIndex" class="btn-primary btn form-control ">Back to List</a>
             </div>
-            
+
             <div class="col-5">
                 <input type="submit" value="Create" class="btn btn-success form-control" />
             </div>
         </div>
     </div>
 </form>
-
-
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        $(document).ready(function () {
-            // Add any JavaScript needed for the Create view here
-        });
-    </script>
-}
-
